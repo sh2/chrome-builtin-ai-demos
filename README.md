@@ -6,8 +6,8 @@ A collection of demo tools built with Chrome's Built-in AI APIs. Each tool is a 
 
 | Tool | File | APIs Used | Chrome Version |
 |------|------|-----------|----------------|
-| Chat | [chat.html](chat.html) | [Prompt API](https://developer.chrome.com/docs/ai/prompt-api) | Origin Trial |
-| Translator | [translator.html](translator.html) | [Translator API](https://developer.chrome.com/docs/ai/translator-api), [Language Detector API](https://developer.chrome.com/docs/ai/language-detection) | 138+ (Stable) |
+| Chat | [chat.html](dist/chat.html) | [Prompt API](https://developer.chrome.com/docs/ai/prompt-api) | Origin Trial |
+| Translator | [translator.html](dist/translator.html) | [Translator API](https://developer.chrome.com/docs/ai/translator-api), [Language Detector API](https://developer.chrome.com/docs/ai/language-detection) | 138+ (Stable) |
 
 ### Chat
 
