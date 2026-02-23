@@ -7,6 +7,32 @@ const errorToast = document.getElementById("error-toast");
 let session = null;
 let isGenerating = false;
 
+// Configure marked
+if (typeof marked !== 'undefined') {
+  marked.use({ renderer: { link: ({ text }) => text } });
+}
+
+const convertMarkdownToHtml = (content, breaks = true) => {
+  if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') {
+    return content;
+  }
+
+  const markdownDiv = document.createElement("div");
+  markdownDiv.textContent = content;
+  const htmlDiv = document.createElement("div");
+  htmlDiv.innerHTML = DOMPurify.sanitize(marked.parse(markdownDiv.innerHTML, { breaks: breaks }));
+
+  // Replace the HTML entities with the original characters in the code blocks
+  htmlDiv.querySelectorAll("code").forEach(codeBlock => {
+    codeBlock.innerHTML = codeBlock.innerHTML
+      .replaceAll("&lt;", "<")
+      .replaceAll("&gt;", ">")
+      .replaceAll("&amp;", "&");
+  });
+
+  return htmlDiv.innerHTML;
+};
+
 // Show error toast
 const showError = (message) => {
   errorToast.textContent = message;
@@ -72,7 +98,11 @@ const addMessage = (role, content) => {
 
   const contentEl = document.createElement("div");
   contentEl.classList.add("message-content");
-  contentEl.textContent = content;
+  if (role === 'ai') {
+    contentEl.innerHTML = convertMarkdownToHtml(content, false);
+  } else {
+    contentEl.textContent = content;
+  }
 
   messageEl.appendChild(avatarEl);
   messageEl.appendChild(contentEl);
@@ -161,7 +191,7 @@ const sendMessage = async () => {
 
     for await (const chunk of stream) {
       result += chunk;
-      contentEl.textContent = result;
+      contentEl.innerHTML = convertMarkdownToHtml(result, false);
       scrollToBottom();
     }
   } catch (error) {

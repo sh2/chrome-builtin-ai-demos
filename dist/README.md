@@ -48,6 +48,7 @@ A DeepL-like translation tool powered by Chrome's built-in Translator API. All t
 - Automatic source language detection via Language Detector API
 - Streaming translation output
 - Auto-translate on input (800ms debounce)
+- Maintains paragraph formatting
 - Language swap button
 - Copy to clipboard
 
