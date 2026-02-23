@@ -154,12 +154,36 @@ const translate = async () => {
         targetText.value = "";
 
         const translator = await createTranslator(sourceLang, targetLang);
-        const stream = translator.translateStreaming(text);
-        let result = "";
 
-        for await (const chunk of stream) {
-            result += chunk;
-            targetText.value = result;
+        // Split text by paragraph breaks (2 or more newlines)
+        const parts = text.split(/((?:\r?\n){2,})/);
+        let fullResult = "";
+
+        for (const part of parts) {
+            if (!part) continue;
+
+            // If the part is just newlines, append it directly
+            if (/^(?:\r?\n)+$/.test(part)) {
+                fullResult += part;
+                targetText.value = fullResult;
+                continue;
+            }
+
+            // Skip translating whitespace-only paragraphs, just append them
+            if (part.trim() === "") {
+                fullResult += part;
+                targetText.value = fullResult;
+                continue;
+            }
+
+            const stream = translator.translateStreaming(part);
+            let partResult = "";
+
+            for await (const chunk of stream) {
+                partResult += chunk;
+                targetText.value = fullResult + partResult;
+            }
+            fullResult += partResult;
         }
 
         copyButton.style.display = "flex";
